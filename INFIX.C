@@ -1,5 +1,4 @@
 #include<stdio.h>
-#include<conio.h>
 #include<string.h>
 #include<ctype.h>
 void push(char item,char s[100],int *t);
@@ -14,7 +13,6 @@ gets(infix);
 InfixtoPostfix(infix,postfix);
 printf("Postfix expression: \n");
 puts(postfix);
-getch();
 return 0;
 }
 void push(char item,char s[100],int *t)
