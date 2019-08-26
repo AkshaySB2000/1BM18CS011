@@ -1,5 +1,4 @@
 #include<stdio.h>
-#include<conio.h>
 int s[100],top=-1;
 void push(int ele);
 int pop();
@@ -7,7 +6,6 @@ void display();
 int main()
 {
 int e;
-clrscr();
 push(1);
 push(2);
 push(3);
@@ -15,7 +13,6 @@ display();
 e=pop();
 printf("\n\nThe popped element is %d\n",e);
 display();
-getch();
 return 0;
 }
 void push(int ele)
