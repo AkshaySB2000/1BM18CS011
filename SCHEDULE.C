@@ -21,7 +21,6 @@ for(i=0;i<n;i++)
 {
 qdelete(q,&f,&r);
 }
-getch();
 return 0;
 }
 void qinsert(int q[size], int bt[size], int *r, int item, int item1)
