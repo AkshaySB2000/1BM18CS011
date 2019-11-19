@@ -1,69 +1,49 @@
 #include<stdio.h>
 #include<stdlib.h>
-struct node 
+struct node
 {
 int data;
-struct node *next;
 struct node *prev;
+struct node *next;
 };
 typedef struct node *NODE;
 NODE getnode();
-NODE insertleft(NODE head, NODE n, int item);
+NODE insertpos(NODE head, int item, int pos);
+NODE insertend(int item, NODE head);
 NODE deleteval(NODE head, int item);
 void display(NODE head);
 int main()
 {
-int item,ch,ch1,c=0,i,count=0;
-NODE head = NULL,p;
+NODE head;
+head = NULL;
+int item,pos,ch,ch1,val;
 do
 {
-printf("Enter\n1 to insert to the left of a node\n2 to delete a given value\n3 to display the contents of the list\n");
+printf("Enter\n1 for insertion to the doubly linked list\n2 for insertion to the left of a given node\n3 to delete a given value from the list\n4 to display the contents of the list\n");
 scanf("%d",&ch);
 switch(ch)
 {
-case 1: printf("Enter the item to be inserted\n");
-	scanf("%d",&item);
-	if(count==0)
-	{
-	head = insertleft(head,head,item);
-	count++;
-	}	
-	else
-	{
-	printf("Enter the node to the left of which item is to be inserted\n");
-	scanf("%d",&i);
-	if(i==1)
-	{
-	head = insertleft(head,head,item);
-	count++;
-	}
-	else
-	{
-	p = head;
-	while(p!=NULL)
-	{
-	c++;
-	if(c==i)
-	{
-	head = insertleft(head,p,item);	
-	count++;
-	}
-	p = p->next;
-	}
-	c=0;
-	}
-	}
-	break;
-case 2: printf("Enter the value to be deleted from the list\n");
-	scanf("%d",&item);
-	head = deleteval(head,item);
-	break;
-case 3: printf("\nThe contents of the list are\n");
-	display(head);
-	break;
-default: printf("\nInvalid choice\n");
+case 1:{ printf("Enter the item to be inserted\n");
+	 scanf("%d",&item);
+	 head = insertend(item,head);
+	 break; }
+case 2:{ printf("Enter the value of the node to the left of which element is to be inserted\n");
+	 scanf("%d",&val);
+	 printf("Enter the item to be inserted at position %d\n",pos);
+	 scanf("%d",&item);
+	 head = insertpos(head,item,val);
+	 break; }
+case 3:{ printf("Enter the item to be deleted from the linked list\n");
+	 scanf("%d",&item);
+	 head = deleteval(head,item);
+	 break; }
+case 4:{ printf("\nContents of the linked list are\n");
+	 display(head);
+	 printf("\n");
+	 break; }
+default: printf("\nInvalid Input\n");
 }
-printf("\nEnter 1 to exit and any other value to continue\n");
+printf("\nEnter any value to continue and 1 to exit\n");
 scanf("%d",&ch1);
 }while(ch1!=1);
 return 0;
@@ -71,105 +51,141 @@ return 0;
 NODE getnode()
 {
 NODE p;
-p=(NODE)malloc(sizeof(struct node));
+p = (NODE)malloc(sizeof(struct node));
 if(p!=NULL)
+{
 return p;
-else
+}
+else 
 {
 printf("\nMemory could not be allocated\n");
 exit(0);
 }
 }
-NODE insertleft(NODE head, NODE n, int item)
-{
-NODE p = getnode();
-p->data = item;
-if(head==NULL)
-{
-p->next = NULL;
-p->prev = NULL;	
-head = p;
-return head;
-}
-else if(head==n)
-{
-p->next = n;
-n->prev = p;
-p->prev = NULL;
-head = p;
-return head;
-}
-else
-{
-n->prev->next = p;
-p->prev = n->prev;
-p->next = n;
-n->prev = p;
-return head;
-}
-}
-NODE deleteval(NODE head, int item)
+void display(NODE head)
 {
 NODE p;
-int pos = 0;
 if(head==NULL)
 {
 printf("\nList is empty\n");
-return head;
+exit(0);
 }
-else if(head->next==NULL)
-{
-if(head->data==item)
-{
-printf("\n%d is deleted from position %d\n",head->data,(pos+1));
-free(head);
-return NULL;
-}
-else
-{
-printf("\nElement not found\n");
-return head;
-}
-}
-else
-{
 p = head;
 while(p!=NULL)
 {
-pos++;
-if(p->data==item)
+printf("%d ",p->data);
+p=p->next;
+}
+}
+NODE insertpos(NODE head, int item, int val)
 {
-if(p->prev!=NULL)
-p->prev->next = p->next;
-else
-head = p->next;
-if(p->next!=NULL)
-p->next->prev = p->prev;
-printf("\n%d is deleted from position %d\n",p->data,pos);
-free(p);
-return head;
-}
-p = p->next;
-}
-if(p==NULL)
-printf("%d not found in the list",item);
-}
-}
-void display(NODE head)
-{
-NODE p = head;
+NODE p,q,temp;
+p=getnode();
+p->data=item;
 if(head==NULL)
 {
-printf("\nList is empty\n");
-return;
+printf("Value cant be inserted \n");
+return head;
+}
+if(head->data==val)
+{
+p->next=head;
+p->prev=NULL;
+head=p;
+return p;
+}
+q=head;
+while(q->next!=NULL)
+{
+temp=q;
+q=q->next;
+if(q->data==val)
+{
+temp->next=p;
+p->prev=temp;
+p->next=q;
+q->prev=p;
+return head;
+}
+}
+if(q->next==NULL)
+{
+printf("Given node value doesnt exist\n");
+return head;
+}
+}
+NODE insertend(int item, NODE head)
+{
+NODE p,q;
+q=getnode();
+q->data = item;
+if(head==NULL)
+{
+q->next=NULL;
+q->prev=NULL;
+head=q;
 }
 else
 {
-while(p!=NULL)
+p=head;
+while(p->next!=NULL)
 {
-printf("%d ",p->data);
-p = p->next;
+p=p->next;
+}
+p->next=q;
+q->prev=p;
+q->next=NULL;
+}
+return head;
+}
+NODE deleteval(NODE head,int item)
+{
+NODE p=head,q;
+if(head==NULL)
+{
+printf("List is empty\n");
+return head;
+}
+if(head->next==NULL)
+{
+if(head->data==item)
+{
+head=head->next;
+free(p);
+head->prev=NULL;
+return head;
+}
+else
+{
+printf("Value doesnt exist\n");
+return head;
 }
 }
+q=head;
+if(head->data==item)
+{
+head=head->next;
+free(p);
+head->prev=NULL;
+return head;
 }
+while(q->next!=NULL)
+{
+p=q;
+q=q->next;
+if(q->data==item)
+{
+p->next=q->next;
+q->next->prev=q->prev;
+free(q);
+return head;
+}
+}
+if(q->next==NULL)
+{
+printf("Value doesnt exist\n");
+return head;
+}
+}
+
 
